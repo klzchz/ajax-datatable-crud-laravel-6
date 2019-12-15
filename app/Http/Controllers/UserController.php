@@ -138,7 +138,9 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {   
+        $user = $this->user->find($id);
+        $user->delete();
+       return response()->json($id);
     }
 }

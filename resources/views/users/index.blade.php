@@ -39,6 +39,7 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
@@ -158,6 +159,58 @@ $("#user_form").on('submit',function(e){
     })
 
   });
+
+  //delete with sweet alert
+
+  var user_id;
+
+  $(document).on('click','.delete',function(){
+    // confirmModal
+    user_id = $(this).attr('id');
+
+    console.log(user_id);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if(result.value){
+          $.ajax({
+            url:`users/destroy/${user_id}`,
+            success: function(data)
+            {
+             
+                   $('#user_table').DataTable().ajax.reload();
+              console.log(data);
+              Swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              )
+
+          
+            
+            },
+            error:function(data)
+            {
+              Swal.fire(
+                'Not deleted!',
+                'Fail to delete this file',
+                'error'
+              )
+            }
+
+          })
+          
+        }
+           
+        })
+   });
+   //delete with sweet alert
 
 });
 
