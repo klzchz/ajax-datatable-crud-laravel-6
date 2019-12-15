@@ -8,3 +8,16 @@
 
 <h4><b>Run your server</b></h4>
 <pre>php artisan serve</pre>
+
+<h4><b>Acess Tinker</b></h4>
+<pre>php artisan tinker</pre>
+
+
+<h4><b>Generate Data</b></h4>
+<pre>factory(App\User::class, 500)->create();</pre>
+
+
+<h4><b>Acess your localhost </b></h4>
+<pre>localhost/users</pre>
+
+
