@@ -68,10 +68,17 @@ $("#user_table").DataTable({
 });
 //Abriu a modal
 $("#create_record").click((e)=>{
+  $('div#pass').show();
+    $('.modal-title').text("New User");
+    $('#action_button').val('Add');
+    $('#action').val('Add');
+    $('#form_result').html('');
+    $('#user_form').trigger('reset');;
     $('#formModal').modal('show');
+
 });
 
-// pega o formulario
+// pega o formulario e parar o evento principal cadastro
 $("#user_form").on('submit',function(e){
     e.preventDefault();
     var action_url = '';
@@ -81,6 +88,11 @@ $("#user_form").on('submit',function(e){
       action_url = "{{route('users.store')}}";
     }
 
+    if($('#action').val() == 'edit')
+    {
+      action_url = "{{route('update.users')}}"
+      
+    }
     $.ajax({
         url:action_url,
         method:"POST",
@@ -95,6 +107,10 @@ $("#user_form").on('submit',function(e){
           $('#user_form').trigger('reset');
           $('#user_table').DataTable().ajax.reload();
           $('#form_result').html(html);
+
+          setTimeout(() => {
+            $('#formModal').modal('hide');
+          }, 300);
 
         },
         error:(data)=>{
@@ -111,19 +127,37 @@ $("#user_form").on('submit',function(e){
             html +=  "</div>";
             $('#form_result').html(html);
 
-
         }
-
-
     })
     
 })
 
-// $('#action_button').on('click',function(e){
-//      e.preventDefault();
-//      $('#formModal').modal('hide');
+  //Consulta do usuario
+  $(document).on('click','.edit',function(event){
+      var id  = $(this).attr('id');
+      $('#user_form').trigger('reset');
+      $('#form_result').html('');
+      $('div#pass').hide();
+      
+  
+    $.ajax({
+        url:`users/${id}/edit`,
+        dataType:"json",
+        success:function(data)
+        { 
+          console.log(data)
+          $('#name').val(data.result.name);
+          $('#email').val(data.result.email);
+          $('#hidden_id').val(id);
+          $('.modal-title').text("Update User");
+          $('#action_button').val('edit');
+          $('#action').val('edit');
+          $('#formModal').modal('show');
+        }
 
-// });
+    })
+
+  });
 
 });
 

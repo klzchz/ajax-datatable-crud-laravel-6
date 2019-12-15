@@ -22,11 +22,18 @@ class UserRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
+    {   
+        
+      
+        if(!$id = request()->hidden_id)
+             $val ="required|min:6|max:40";
+        else
+            $val = null;
+    
         return [
             'name'=>'required|min:3|max:100|',
-            'email'=>'required|unique:users,email',
-            'password'=>'required|min:6|max:40'
+            'email'=>"required|unique:users,email,{$id}",
+            'password'=>"{$val}"
         ];
     }
 }

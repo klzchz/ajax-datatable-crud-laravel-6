@@ -34,7 +34,7 @@ class UserController extends Controller
                         ->addColumn('action',function($data){
                             $button = "<button type='button' 
                             name='edit' id='{$data->id}' 
-                            class='edit  btn btn-primary btn-sm'>Edit</button>";
+                            class='edit btn btn-primary btn-sm'>Edit</button>";
 
                             $button .="<button type='button' 
                             name='delete' id='{$data->id}' 
@@ -88,7 +88,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+      
     }
 
     /**
@@ -99,7 +99,14 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user= $this->user->find($id);
+
+        $result = [
+            'name'=>$user->name,
+            'email'=>$user->email
+        ];
+
+        return response()->json(['result'=>$result]);
     }
 
     /**
@@ -109,9 +116,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(UserRequest $request, $id = null)
     {
-        //
+        $user = $this->user->find($request->hidden_id);
+        $data = [
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>$user->password
+        ];
+
+         $user->update($data);
+
+         return response()->json(['success'=>'Data successfully Updated']);
+
     }
 
     /**
