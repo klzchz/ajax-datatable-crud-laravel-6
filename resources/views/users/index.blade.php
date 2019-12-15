@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-br">
   <head>
-    <title>Title</title>
+    <title>{{'Users' ?? $title}}</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
   
@@ -16,10 +16,10 @@
   <body>
   <div class="container">    
      <br />
-     <h3 align="center">How to Delete or Remove Data From Mysql in Laravel 6 using Ajax</h3>
+     <h3 align="center">Usuarios</h3>
      <br />
      <div align="right">
-      <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create Record</button>
+      <button type="button" name="create_record" id="create_record" class="btn btn-success btn-sm">Create user</button>
      </div>
      <br />
    <div class="table-responsive">
@@ -52,6 +52,7 @@
 <script>
 $(document).ready(function(){
 
+// Listando usuarios
 $("#user_table").DataTable({
     processing:true,
     serverSide:true,
@@ -65,19 +66,64 @@ $("#user_table").DataTable({
 
     ]
 });
-
+//Abriu a modal
 $("#create_record").click((e)=>{
-  e.preventDefault();
-
     $('#formModal').modal('show');
-
 });
 
-$('#action_button').on('click',function(e){
-     e.preventDefault();
-     $('#formModal').modal('hide');
+// pega o formulario
+$("#user_form").on('submit',function(e){
+    e.preventDefault();
+    var action_url = '';
 
-});
+    if($('#action').val() ==  'Add')
+    {
+      action_url = "{{route('users.store')}}";
+    }
+
+    $.ajax({
+        url:action_url,
+        method:"POST",
+        data:$(this).serialize(),
+        dataType:"json",
+
+        success:(data)=>{
+          $('#form_result').html('');
+          console.log(data);
+          var html ='<div class="alert alert-success">'+data.success+'</div>';
+
+          $('#user_form').trigger('reset');
+          $('#user_table').DataTable().ajax.reload();
+          $('#form_result').html(html);
+
+        },
+        error:(data)=>{
+          $('#form_result').html('');
+          console.log(data.responseJSON.errors);
+            var errors = data.responseJSON.errors;
+            
+            var html = '<div class="alert alert-danger text-center">';
+
+            $.each(errors, function(key,value) {
+              html += '<p >'+value+'</p>';
+            });
+              
+            html +=  "</div>";
+            $('#form_result').html(html);
+
+
+        }
+
+
+    })
+    
+})
+
+// $('#action_button').on('click',function(e){
+//      e.preventDefault();
+//      $('#formModal').modal('hide');
+
+// });
 
 });
 

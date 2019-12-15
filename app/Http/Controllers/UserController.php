@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {   
@@ -22,6 +23,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {       
+        $title = 'Users';
         // getting all data
         $data = $this->user->latest()->get();
 
@@ -44,7 +46,7 @@ class UserController extends Controller
 
                        
         }
-        return view('users.index');
+        return view('users.index',compact('title'));
     }
 
     /**
@@ -63,9 +65,19 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        $data = [
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>\Hash::make($request->password),
+        ];
+
+         $this->user->create($data);
+
+         return response()->json(['success'=>'Data successfully added']);
+
+
     }
 
     /**
@@ -97,7 +109,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         //
     }
